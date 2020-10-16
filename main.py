@@ -5,7 +5,7 @@ from discord.ext import commands
 prefix = keys.PREFIX
 bot = commands.Bot(command_prefix=prefix)
 
-extensions = ['cogs.cmds.user','cogs.cmds.admin','cogs.cmds.music']
+extensions = ['cogs.cmds.user','cogs.cmds.admin','cogs.cmds.music','cogs.listener.log']
 
 if __name__ == '__main__':
     for extension in extensions:
@@ -23,6 +23,6 @@ async def on_ready():
 
 @bot.event
 async def on_connect():
-      await bot.change_presence(activity=discord.Game(name='Nervt nicht.'), status=discord.Status.online)
+      await bot.change_presence(activity=discord.Game(name='Nervt nicht. Musik funktioniert glaube ich k.A.'), status=discord.Status.online)
 
 bot.run(keys.CLIENT_TOKEN)

@@ -31,7 +31,7 @@ class User(commands.Cog):
 
     @commands.command(name="dog", aliases=["doggo"])
     async def dog(self,ctx, *args: to_lower):
-        """Doggo pictures!
+        """Doggo
         \'!dog\' for a random dog
         \'!dog [breed]\' for a picture of a specific breed
         \'!dog [breed-subbreed]\' for a picture of a specific subbreed
