@@ -34,8 +34,9 @@ class User(commands.Cog):
         """Doggo pictures!
         \'!dog\' for a random dog
         \'!dog [breed]\' for a picture of a specific breed
+        \'!dog [breed-subbreed]\' for a picture of a specific subbreed
         \'!dog list\' for a list of all breeds
-        \'!dog list [breed]\' for a list of all sub-breed (written bold in \'list\')
+        \'!dog list [breed]\' for a list of all subbreeds (written bold in \'list\')
         """
         if len(args) == 0:
             url = jsonParser.getJson("https://dog.ceo/api/breeds/image/random").get("message")
@@ -44,12 +45,13 @@ class User(commands.Cog):
             return await ctx.send(embed=embed)
         if len(args) == 1:
             if not args[0] == "list":
-                jsonO = jsonParser.getJson("https://dog.ceo/api/breed/{}/images".format(args[0]))
+                breed = args[0].replace("-","/");
+                jsonO = jsonParser.getJson("https://dog.ceo/api/breed/{}/images".format(breed))
                 if jsonO.get("status") == "error":
                     return await ctx.send("Breed not found")
                 doggos = jsonO.get("message")
                 url = random.choice(doggos)
-                embed = discord.Embed(title=args[0]).set_image(url=url)
+                embed = discord.Embed(title=args[0].title()).set_image(url=url)
                 return await ctx.send(embed=embed)
             else:
                 doggoList = jsonParser.getJson("https://dog.ceo/api/breeds/list/all").get("message")
