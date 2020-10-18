@@ -1,4 +1,4 @@
-import discord, keys, random
+import discord, keys, random, json, requests
 from discord.ext import commands
 from util import parser
 from bs4 import BeautifulSoup
@@ -44,7 +44,7 @@ class User(commands.Cog):
             return await ctx.send(embed=embed)
         if len(args) == 1:
             if not args[0] == "list":
-                breed = args[0].replace("-","/");
+                breed = args[0].replace("-","/")
                 jsonO = parser.getJson("https://dog.ceo/api/breed/{}/images".format(breed))
                 if jsonO.get("status") == "error":
                     return await ctx.send("Breed not found")
@@ -79,12 +79,69 @@ class User(commands.Cog):
 
     @commands.command()
     async def pun(self,ctx):
+        """Get a random pun. Very funny.
+        Don't do it."""
         data = BeautifulSoup(parser.getHTML("https://pun.me/random/"), 'html.parser').find("ul",{"class":"puns single"}).find('li')
         punID = data.find('a').getText()
         pun = data.getText().replace(punID,"")
         return await ctx.send(pun)
-                
+
+    @commands.command(name="owl", aliases=["eule"])
+    async def owl(self,ctx):
+        jsonO = parser.getJson("https://pixabay.com/api/?key={}&q=eule&category=animal&per_page=200&image_type=photo".format(keys.PIXABAY_API))
+        url = random.choice(jsonO.get('hits')).get('largeImageURL')
+        embed = discord.Embed().set_image(url=url).set_footer(text="Image from Pixabay")
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def xkcd(self,ctx,*args):
+        """ Xkcd comics
+        \'!xkcd\' for the latest xkcd
+        \'!xkcd r\' for a random xkcd
+        \'!xkcd [number]\' for a specific xkcd
+        """
+        if len(args) == 0:
+            jsonO = parser.getJson("https://xkcd.com/info.0.json")
+            embed = discord.Embed(color=0x633032)
+            embed.set_image(url=jsonO.get("img"))
+            embed.add_field(name="{} (Nr. {})".format(jsonO.get("title"),jsonO.get("num")),value=jsonO.get("alt"))
+            return await ctx.send(embed=embed)
+        if len(args) == 1:
+            if args[0] == 'r':
+                maxNumber = parser.getJson("https://xkcd.com/info.0.json").get("num")
+                jsonO = parser.getJson("https://xkcd.com/{}/info.0.json".format(random.randint(1,maxNumber)))
+                embed = discord.Embed(color=0x633032)
+                embed.set_image(url=jsonO.get("img"))
+                embed.add_field(name="{} (Nr. {})".format(jsonO.get("title"),jsonO.get("num")),value=jsonO.get("alt"))
+                return await ctx.send(embed=embed)
+            else:
+                try:
+                    number = int(args[0])
+                except ValueError:
+                    return await ctx.send("Enter a valid number or an \"r\" for a random xkcd")
+                jsonO = parser.getJson("https://xkcd.com/{}/info.0.json".format(number))
+                embed = discord.Embed(color=0x633032)
+                embed.set_image(url=jsonO.get("img"))
+                embed.add_field(name="{} (Nr. {})".format(jsonO.get("title"),jsonO.get("num")),value=jsonO.get("alt"))
+                return await ctx.send(embed=embed)
+
+    @commands.command()
+    async def smbc(self,ctx, *args):
+        if len(args) == 0:
+            data = BeautifulSoup(parser.getHTML("https://www.smbc-comics.com/"), "html.parser").find("script",{"type":"application/ld+json"})
+            jsonO = json.loads(str(data).replace("<script type=\"application/ld+json\">","").replace("</script>",""))
+            embed= discord.Embed(title=jsonO.get("name"))
+            embed.set_image(url=jsonO.get("image"))
+            return await ctx.send(embed=embed)
+        if len(args) == 1:
+            if args[0] == "r" or args[0] == "random":
+                name = requests.get("https://smbc-comics.com/rand.php").content.decode("utf-8").replace("\"","")
+                data = BeautifulSoup(parser.getHTML("https://www.smbc-comics.com/comic/{}".format(name)), "html.parser").find("script",{"type":"application/ld+json"})
+                jsonO = json.loads(str(data).replace("<script type=\"application/ld+json\">","").replace("</script>",""))
+                embed= discord.Embed(title=jsonO.get("name"),color=0x3e2979)
+                embed.set_image(url=jsonO.get("image"))
+                return await ctx.send(embed=embed)
+
 
 def setup(bot):
-   bot.add_cog(User(bot))
-    
+    bot.add_cog(User(bot))
