@@ -2,10 +2,13 @@ import discord,keys, traceback
 from datetime import datetime, date
 from discord.ext import commands
 
-prefix = keys.PREFIX
-bot = commands.Bot(command_prefix=prefix)
+intents = discord.Intents.default()
+intents.members = True
 
-extensions = ['cogs.cmds.user','cogs.cmds.admin','cogs.cmds.music','cogs.listener.log']
+prefix = keys.PREFIX
+bot = commands.Bot(command_prefix=prefix,intents=intents)
+
+extensions = ['cogs.cmds.user','cogs.cmds.admin','cogs.cmds.music','cogs.listener.log','cogs.listener.manage']
 
 if __name__ == '__main__':
     for extension in extensions:

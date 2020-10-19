@@ -4,6 +4,8 @@ from util import parser
 from bs4 import BeautifulSoup
 
 
+
+
 def to_lower(arg):
     return arg.lower()
 
@@ -25,7 +27,7 @@ class User(commands.Cog):
         gif = random.choice(parser.getJson(link).get("results"))
         url = gif.get("media")[0].get("tinygif").get("url")
         embed = discord.Embed().set_image(url=url)
-        embed.add_field(name="HEY!",value="{0} du hast eine Umarmung von {1} bekommen!".format(arg,ctx.author.nick))
+        embed.add_field(name="HEY!",value="{0} du hast eine Umarmung von {1} bekommen!".format(arg,ctx.author.mention))
         await ctx.send(embed=embed)
 
     @commands.command(name="dog", aliases=["doggo"])
@@ -97,7 +99,7 @@ class User(commands.Cog):
     async def xkcd(self,ctx,*args):
         """ Xkcd comics
         \'!xkcd\' for the latest xkcd
-        \'!xkcd r\' for a random xkcd
+        \'!xkcd [r|random]\' for a random xkcd
         \'!xkcd [number]\' for a specific xkcd
         """
         if len(args) == 0:
@@ -107,7 +109,7 @@ class User(commands.Cog):
             embed.add_field(name="{} (Nr. {})".format(jsonO.get("title"),jsonO.get("num")),value=jsonO.get("alt"))
             return await ctx.send(embed=embed)
         if len(args) == 1:
-            if args[0] == 'r':
+            if args[0] == 'r' or args[0] == 'random':
                 maxNumber = parser.getJson("https://xkcd.com/info.0.json").get("num")
                 jsonO = parser.getJson("https://xkcd.com/{}/info.0.json".format(random.randint(1,maxNumber)))
                 embed = discord.Embed(color=0x633032)
@@ -127,6 +129,10 @@ class User(commands.Cog):
 
     @commands.command()
     async def smbc(self,ctx, *args):
+        """Smbc comics
+        \'!smbc\' for the latest smbc 
+        \'!smbc [r|random]\' for a random smbc
+        """
         if len(args) == 0:
             data = BeautifulSoup(parser.getHTML("https://www.smbc-comics.com/"), "html.parser").find("script",{"type":"application/ld+json"})
             jsonO = json.loads(str(data).replace("<script type=\"application/ld+json\">","").replace("</script>",""))
