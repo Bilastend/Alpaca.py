@@ -9,6 +9,8 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_messages=True, read_messages=True)
     async def bulk_delete(self,ctx,messageID: int):
+        """ Delete all messages up to a certain ID
+        """
         targetMessage = await ctx.channel.fetch_message(messageID)
         messages = await ctx.channel.history(after=targetMessage).flatten()
         await ctx.channel.delete_messages(messages)
