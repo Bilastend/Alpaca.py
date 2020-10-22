@@ -130,3 +130,4 @@ dmypy.json
 
 keys.py
 bot-env
+.vscode/settings.json

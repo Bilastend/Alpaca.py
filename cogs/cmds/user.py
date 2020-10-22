@@ -210,6 +210,33 @@ class User(commands.Cog):
                 embed.set_image(url=jsonO.get("url"))
                 await ctx.send(embed=embed)
 
+                
+    @commands.command()
+    async def chuck(self,ctx,*args):
+        """Chuck Norris facts.
+        \'!chuck\' for a random Chuck Norris fact.
+        \'!chuck list\' to list all categories.
+        \'!chuck [category]\' for a fact of a specific category.
+        """
+        if len(args) == 0:
+            jsonO = parser.getJson("https://api.chucknorris.io/jokes/random")
+            joke = jsonO.get("value")
+            await ctx.send(joke)
+        else:            
+            if args[0] == "list":
+                jsonC = parser.getJson("https://api.chucknorris.io/jokes/categories")
+                liste = ""
+                for cate in jsonC:
+                    liste += "{} \n".format(cate)
+                embed = discord.Embed(color = 0x123456)
+                embed.add_field(name = "Categories",value = liste)
+                await ctx.send(embed = embed)
+            else:
+                jsonO = parser.getJson("https://api.chucknorris.io/jokes/random?category={}".format(args[0]))
+                joke = jsonO.get("value")
+                await ctx.send(joke)
+
+
 
 def setup(bot):
     bot.add_cog(User(bot))
