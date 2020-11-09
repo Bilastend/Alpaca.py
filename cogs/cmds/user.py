@@ -236,6 +236,42 @@ class User(commands.Cog):
                 joke = jsonO.get("value")
                 await ctx.send(joke)
 
+    @commands.command()
+    async def rc(self,ctx,*args):
+        """Cortex Rpg rolls.
+        \'!rc\' followed by dice rolls split by +. For example: (3d6+1d8) 
+        """
+        if len(args) == 0:
+            await ctx.send("Insert help here")
+        else:
+            print(args)
+            throwstring = ""
+            for item in args:
+                throwstring += item
+            throwlist = throwstring.split("+")
+            printstring = ctx.author.mention +": " + throwstring + " = "
+            resultlist = []
+            for throw in throwlist:
+                throw = throw.split("d")
+                for i in range(int(throw[0])):
+                    rand = random.randint(1,int(throw[1]))
+                    if int(rand) > 1:
+                        printstring += "d{}: {} ".format(int(throw[1]),rand)
+                    else:
+                        printstring += "d{}: {} ".format(int(throw[1]),"~~1~~")
+                    resultlist.append(rand)
+            resultlist.sort()
+            if resultlist[-1] == 1:
+                printstring+= "\nThis was a complete botch."
+            elif len(resultlist)>1 and resultlist[-2] != 1:
+                printstring += "\nHighest sum: {} + {} = {}".format(resultlist[-1],resultlist[-2],resultlist[-1] + resultlist[-2])
+
+            """embed = discord.Embed(color = 0x654321)
+            embed.add_field(value = printstring)
+            await ctx.send(embed = embed)"""
+            
+            await ctx.send(printstring)
+
 
 
 def setup(bot):
