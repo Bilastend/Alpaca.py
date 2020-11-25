@@ -272,6 +272,14 @@ class User(commands.Cog):
             
             await ctx.send(printstring)
 
+    @commands.command()
+    async def fz(self, ctx):
+        """German Football Quotes
+        """
+        data = BeautifulSoup(parser.getHTML("https://www.fussballdaten.de/sprueche/"), "html.parser")
+        quote = data.find("b",{"style":"font-weight:600;"}).getText()
+        auth = data.find("p",{"class":"green fs12 pt5"}).getText()
+        await ctx.send("\"{}\" -{}".format(quote,auth).replace("\n",""))
 
 
 def setup(bot):
