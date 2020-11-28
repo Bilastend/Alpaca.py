@@ -241,6 +241,34 @@ class User(commands.Cog):
         """Cortex Rpg rolls.
         \'!rc\' followed by dice rolls split by +. For example: (3d6+1d8) 
         """
+        diceDict = { "D4e1" :"<:D4e1:780101474755411989>" ,
+                     "D4e2" :"<:D4e2:780103875096870962>" ,
+                     "D4e3" :"<:D4e3:780103875100540958>" ,
+                     "D4e4" :"<:D4e4:780103875108929576>" ,
+                     "D6e1" :"<:D6e1:780107286965780500>" ,
+                     "D6e2" :"<:D6e2:780107286962110464>" ,
+                     "D6e3" :"<:D6e3:780107287066443787>" ,
+                     "D6e4" :"<:D6e4:780107286612934678>" ,
+                     "D6e5" :"<:D6e5:780107286826713093>" ,
+                     "D6e6" :"<:D6e6:780107286638100484>" ,
+                     "D8e1" :"<:D8e1:782216865954136105>" ,
+                     "D8e2" :"<:D8e2:782216866155724810>" ,
+                     "D8e3" :"<:D8e3:782216866089271316>" ,
+                     "D8e4" :"<:D8e4:782216866085077003>" ,
+                     "D8e5" :"<:D8e5:782216866109980682>" ,
+                     "D8e6" :"<:D8e6:782216866139340810>" ,
+                     "D8e7" :"<:D8e7:782216866130165780>" ,
+                     "D8e8" :"<:D8e8:782216866151137329>" ,
+                     "D10e1" :"<:D10e1:782216866000142357>" ,
+                     "D10e2" :"<:D10e2:782216866193473566>" ,
+                     "D10e3" :"<:D10e3:782216866243543080>" ,
+                     "D10e4" :"<:D10e4:782216866332278804>" ,
+                     "D10e5" :"<:D10e5:782216866290073630>" ,
+                     "D10e6" :"<:D10e6:782216865874182165>" ,
+                     "D10e7" :"<:D10e7:782216866252193802>" ,
+                     "D10e8" :"<:D10e8:782216866122563595>" ,
+                     "D10e9" :"<:D10e9:782216866227290132>" ,
+                     "D10e10" :"<:D10e10:782216866252062740>" }
         if len(args) == 0:
             await ctx.send("Insert help here")
         else:
@@ -255,10 +283,13 @@ class User(commands.Cog):
                 throw = throw.split("d")
                 for i in range(int(throw[0])):
                     rand = random.randint(1,int(throw[1]))
-                    if int(rand) > 1:
-                        printstring += "d{}: {} ".format(int(throw[1]),rand)
+                    if int(throw[1]) in [4,6,8,10]:                        
+                        printstring += diceDict.get("D{}e{}".format(int(throw[1]),rand))+" "
                     else:
-                        printstring += "d{}: {} ".format(int(throw[1]),"~~1~~")
+                        if int(rand) > 1:
+                            printstring += "d{}: {} ".format(int(throw[1]),rand)
+                        else:
+                            printstring += "d{}: {} ".format(int(throw[1]),"~~1~~")
                     resultlist.append(rand)
             resultlist.sort()
             if resultlist[-1] == 1:
