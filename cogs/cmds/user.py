@@ -290,12 +290,24 @@ class User(commands.Cog):
                             printstring += "d{}: {} ".format(int(throw[1]),rand)
                         else:
                             printstring += "d{}: {} ".format(int(throw[1]),"~~1~~")
-                    resultlist.append(rand)
-            resultlist.sort()
-            if resultlist[-1] == 1:
+                    resultlist.append([rand,throw[1]])
+            high = []
+            high2 = []
+            for i in resultlist:
+                if high ==[]:
+                    high = i
+                elif high2 == []:
+                    high2 = i
+                if high[0]<i[0]:
+                    high2 = high
+                    high = i
+                elif high2 != [] and high2[0]<i[0]:
+                    high2 = i
+
+            if high == []:
                 printstring+= "\nThis was a complete botch."
-            elif len(resultlist)>1 and resultlist[-2] != 1:
-                printstring += "\nHighest sum: {} + {} = {}".format(resultlist[-1],resultlist[-2],resultlist[-1] + resultlist[-2])
+            elif len(resultlist)>1 and high2 != [] and high2[0] != 1:
+                printstring += "\nHighest sum: " + diceDict.get("D{}e{}".format(int(high[1]),high[0]))+" + " + diceDict.get("D{}e{}".format(int(high2[1]),high2[0])) + "= {}".format(high[0]+high2[0])
 
             """embed = discord.Embed(color = 0x654321)
             embed.add_field(value = printstring)
