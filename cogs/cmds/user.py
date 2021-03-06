@@ -316,6 +316,37 @@ class User(commands.Cog):
             await ctx.send(printstring)
 
     @commands.command()
+    async def r(self,ctx,*args):
+        """Cortex Rpg rolls.
+        \'!rc\' followed by dice rolls split by +. For example: (3d6+1d8) 
+        """
+        if len(args) == 0:
+            await ctx.send("Insert help here")
+        else:
+            print(args)
+            throwstring = ""
+            for item in args:
+                throwstring += item
+            throwlist = throwstring.split("+")
+            printstring = ctx.author.mention +": " + throwstring + " = "
+            resultlist = []
+            result = 0
+            for throw in throwlist:
+                throw = throw.split("d")
+                if len(throw)==1:
+                    printstring+="{}+".format(throw[0])
+                    result+=int(throw[0])
+                else:
+                    for i in range(int(throw[0])):
+                        rand = random.randint(1,int(throw[1]))
+                        printstring += "{}+".format(rand)
+                        result+=rand
+            printstring=printstring[:-1]
+            printstring+="={}".format(result)
+            await ctx.send(printstring)
+
+
+    @commands.command()
     async def fz(self, ctx):
         """German Football Quotes
         """
